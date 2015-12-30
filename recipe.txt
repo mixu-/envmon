@@ -1,0 +1,6 @@
+rrdtool create env.rrd\
+--step 10 \
+DS:RelativeHumidity:GAUGE:30:0:100 \
+DS:Temperature:GAUGE:7200:-273:100 \
+RRA:MAX:0.5:1:262800 \
+RRA:AVERAGE:0.5:1:360:100000
