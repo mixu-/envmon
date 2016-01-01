@@ -1,14 +1,14 @@
 rrdtool create env.rrd \
 --step 10 \
 DS:RelativeHumidity:GAUGE:30:0:100 \
-DS:Temperature:GAUGE:7200:-273:100 \
+DS:Temperature:GAUGE:30:-273:100 \
 RRA:MAX:0.5:1:262800 \
 RRA:AVERAGE:0.5:1:360:100000
 
 
 rrdtool create weather.rrd \
 --step 300 \
-DS:RelativeHumidity:GAUGE:7200:0:100 \
+DS:RelativeHumidity:GAUGE:1800:0:100 \
 DS:Temperature:GAUGE:1800:-273:100 \
 RRA:MAX:0.5:1:105200 \
 RRA:AVERAGE:0.5:12:100000

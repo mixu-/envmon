@@ -15,14 +15,16 @@ while true; do
   if [[ $temp =~ $re ]] && [[ $rh =~ $re ]] && [[ $waited -ge 10 ]]; then
     echo ${temp}C / ${rh}%
     rrdtool update env.rrd N:${rh}:${temp}
-    ./make_env_graph.sh
+    ./make_env_graph.sh "Today" -86200 "env.png"
+    ./make_env_graph.sh "Past 7 days" -604800 "env_7d.png"
+    ./make_env_graph.sh "Past year" -31536000 "env_365d.png"
     start=`date +%s`
     waited=0
     if [[ $waited_weather -ge 300 ]]; then
       outdoor_temp=`curl http://www.eeki.biz/saavahti.php | grep -Po 'tila \K[-\d.]*'`
       outdoor_rh=0
       rrdtool update weather.rrd N:${outdoor_rh}:${outdoor_temp}
-      waited_weather=0
+      start_weather=0
     fi
   fi
 done < /dev/ttyACM0

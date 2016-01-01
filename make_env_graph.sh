@@ -1,34 +1,35 @@
 #!/bin/bash
-rrdtool graph env.png \
+title=$1
+age=$2
+png=$3
+rrdtool graph $png \
 -w 800 -h 250 -a PNG \
---start -84600 --end now \
+--start $age --end now \
 --font DEFAULT:9: \
---title "Home environment monitor" \
+--title "$title" \
 --watermark "`date`" \
---vertical-label "Temp C" \
---right-axis-label "RH%" \
+--vertical-label "RH%" \
+--right-axis-label "Temp C" \
 --right-axis 0.5:0 \
---x-grid MINUTE:10:HOUR:1:MINUTE:120:0:%R \
---alt-y-grid \
 --rigid \
-DEF:Temperature=env.rrd:Temperature:AVERAGE \
-LINE3:Temperature#0000FF:"Indoor temp, C\t" \
-GPRINT:Temperature:LAST:"Cur\: %5.2lfC\t" \
-GPRINT:Temperature:AVERAGE:"Avg\: %5.2lfC\t" \
-GPRINT:Temperature:MAX:"Max\: %5.2lfC\t" \
-GPRINT:Temperature:MIN:"Min\: %5.2lfC\n" \
-DEF:RelativeHumidity=env.rrd:RelativeHumidity:AVERAGE \
-LINE3:RelativeHumidity#00FF00:"RH%\t" \
-GPRINT:RelativeHumidity:LAST:"Cur\: %5.2lf%%\t" \
-GPRINT:RelativeHumidity:AVERAGE:"Avg\: %5.2lf%%\t" \
-GPRINT:RelativeHumidity:MAX:"Max\: %5.2lf%%\t" \
-GPRINT:RelativeHumidity:MIN:"Min\: %5.2lf%%\n" \
-DEF:OutdoorTemp=weather.rrd:Temperature:AVERAGE \
-LINE3:OutdoorTemp#000000:"Outdoor temp, C\t" \
-GPRINT:OutdoorTemp:LAST:"Cur\: %5.2lfC\t" \
-GPRINT:OutdoorTemp:AVERAGE:"Avg\: %5.2lfC\t" \
-GPRINT:OutdoorTemp:MAX:"Max\: %5.2lfC\t" \
-GPRINT:OutdoorTemp:MIN:"Min\: %5.2lfC\n" \
+DEF:temp=env.rrd:Temperature:AVERAGE \
+CDEF:temp2=temp,2,* \
+LINE3:temp2#0000FF:"Indoor temp\t" \
+GPRINT:temp:LAST:"Cur\:%5.2lf C\t" \
+GPRINT:temp:AVERAGE:"Avg\:%5.2lf C\t" \
+GPRINT:temp:MAX:"Max\:%5.2lf C\t" \
+GPRINT:temp:MIN:"Min\:%5.2lf C\n" \
+DEF:rh=env.rrd:RelativeHumidity:AVERAGE \
+LINE3:rh#00FF00:"RH%\t\t" \
+GPRINT:rh:LAST:"Cur\:%5.2lf%%\t" \
+GPRINT:rh:AVERAGE:"Avg\:%5.2lf%%\t" \
+GPRINT:rh:MAX:"Max\:%5.2lf%%\t" \
+GPRINT:rh:MIN:"Min\:%5.2lf%%\n" \
+DEF:otemp=weather.rrd:Temperature:AVERAGE \
+LINE3:otemp#000000:"Outdoor temp\t" \
+GPRINT:otemp:LAST:"Cur\:%5.2lfC\t" \
+GPRINT:otemp:AVERAGE:"Avg\:%5.2lfC\t" \
+GPRINT:otemp:MAX:"Max\:%5.2lfC\t" \
+GPRINT:otemp:MIN:"Min\:%5.2lfC\n"
 
-
-cp env.png /var/www/public/
+cp *.png /var/www/public/
