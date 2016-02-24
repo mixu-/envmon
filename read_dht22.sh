@@ -21,12 +21,18 @@ while true; do
     ./make_env_graph.sh "Just now" -7200 "env_now.png"
     ./make_env_graph.sh "Today" -86200 "env_today.png"
     ./make_env_graph.sh "Past 7 days" -604800 "env_7d.png"
+    ./make_env_graph.sh "Past 30 days" -2592000 "env_90d.png"
+    ./make_indoor_graph.sh "Today" -86200 "indoor_today.png"
+    ./make_indoor_graph.sh "Past 30 days" -2592000 "indoor_90d.png"
+    ./make_outdoor_graph.sh "Past 30 days" -2592000 "outdoor_90d.png"
     ./make_env_graph.sh "Past year" -31536000 "env_365d.png"
     now=`date +%s`
     start=$now
     if [[ $waited_weather -ge 300 ]]; then
-      outdoor_temp=`curl http://saa.knuutilat.net/ | grep -oP '<TD>.{5}<TD>\K.{1,5}' | sed 's/°//'`
+      outdoor_temp=`curl http://saa.knuutilat.net/ | grep -oP '<TD>.{5}<TD>\K.{1,5}°C' | head -1 | sed 's/°C.*//'`
       outdoor_rh=`curl http://saa.knuutilat.net/ | grep -oP 'RIGHT>\K\d*'`
+      echo "Outdoor temp: ${outdoor_temp}, RH: ${outdoor_rh}%"
+      echo "rrdtool update weather.rrd N:${outdoor_rh}:${outdoor_temp}"
       rrdtool update weather.rrd N:${outdoor_rh}:${outdoor_temp}
       start_weather=`date +%s`
     fi
